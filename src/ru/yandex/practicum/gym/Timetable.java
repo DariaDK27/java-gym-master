@@ -35,4 +35,22 @@ public class Timetable {
         }
         return result;
     }
+
+    public List<CounterOfTrainings> getCountByCoaches() {
+        Map<Coach, Integer> counts = new HashMap<>();
+        for (TreeMap<TimeOfDay, List<TrainingSession>> day : timetable.values()) {
+            for (List<TrainingSession> sessions : day.values()) {
+                for (TrainingSession session : sessions) {
+                    counts.merge(session.getCoach(), 1, Integer::sum);
+                }
+            }
+        }
+        List<CounterOfTrainings> result = new ArrayList<>();
+        for (Map.Entry<Coach, Integer> entry : counts.entrySet()) {
+            result.add(new CounterOfTrainings(entry.getKey(), entry.getValue()));
+        }
+
+        result.sort((a, b) -> Integer.compare(b.getCount(), a.getCount()));
+        return result;
+    }
 }
